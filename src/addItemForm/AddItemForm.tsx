@@ -4,6 +4,7 @@ import { ChangeEvent, useState } from "react";
 type AddItemFormTypeProps = {
     callBack: (titleItem: string)=> void
 }
+
 export const AddItemForm = (props: AddItemFormTypeProps) => {
         
     const [title, setTitle] = useState<string>('')
