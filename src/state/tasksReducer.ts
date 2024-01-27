@@ -1,38 +1,51 @@
 import { v1 } from "uuid";
 import { TasksType } from "../App";
+import { AddTodolistActionType, RemoveTodolistActionType } from "./todolistsReducer";
 
-type TaskReducerActionType = AddTaskACType | RemoveTaskACType | ChangeTaskStatusACType | ChangeTaskTitleACType | AddPureTaskACTitle
+type TaskReducerActionType =  AddTaskACType 
+                            | RemoveTaskACType 
+                            | ChangeTaskStatusACType 
+                            | ChangeTaskTitleACType 
+                            | AddTodolistActionType
+                            |RemoveTodolistActionType
 
-export const taskReducer = (state: TasksType, action: TaskReducerActionType): TasksType  => {
+const initialState: TasksType = {}
+
+export const tasksReducer = (state = initialState , action: TaskReducerActionType): TasksType  => {
     switch (action.type) {
-        case 'ADD-TASK': {
+        case 'ADD-TASK': 
             const task = {
                 id: v1(),
                 title: action.payload.titleNewTask,
                 isDone: false
             }
             return { ...state, [action.payload.todolistId]: [...state[action.payload.todolistId], task] }
-        }
-        case 'REMOVE-TASK': {
+        
+        case 'REMOVE-TASK': 
             return { ...state, [action.payload.todolistId]: state[action.payload.todolistId].filter((el: any) => el.id !== action.payload.taskId) }
-        }
-        case 'CHANGE-TASK-STATUS': {
+        
+        case 'CHANGE-TASK-STATUS': 
             return {
                 ...state, [action.payload.todolistId]: state[action.payload.todolistId].map((el: any) => el.id === action.payload.taskId
                     ? { ...el, isDone: action.payload.newIsDoneValue }
                     : el)
             }
-        }
-        case 'CHANGE-TASK-TITLE': {
+        
+        case 'CHANGE-TASK-TITLE': 
             return {
                 ...state, [action.payload.todolistId]: state[action.payload.todolistId].map((el: any) => el.id === action.payload.taskId
                     ? { ...el, title: action.payload.newTitleValue }
                     : el)
             }
-        }
-        case 'ADD-PURE-TASK':{
-            return {...state, [action.payload.todolistId]: [] }
-        }
+        
+        case 'ADD-TODOLIST':
+            return {...state, [action.payload.todolistId]: []}
+            
+        case 'REMOVE-TODOLIST':
+            const newState = {...state}
+            delete newState[action.payload.todolistId]
+            return newState
+
         default: return state
     }
 }
@@ -43,7 +56,6 @@ type AddTaskACType = ReturnType<typeof addTaskAC>
 type RemoveTaskACType = ReturnType<typeof removeTaskAC>
 type ChangeTaskStatusACType = ReturnType<typeof changeTaskStatusAC>
 type ChangeTaskTitleACType = ReturnType<typeof changeTaskTitleAC>
-type AddPureTaskACTitle = ReturnType<typeof addPureTaskAC >
 
 export const addTaskAC = (todolistId: string, titleNewTask: string) => {
     return {
@@ -83,12 +95,5 @@ export const changeTaskTitleAC = (todolistId: string, taskId: string, newTitleVa
         }
     } as const
 }
-export const addPureTaskAC = (todolistId: string) => {
-    return {
-        type: 'ADD-PURE-TASK',
-        payload: {
-            todolistId,
-        }
-    } as const
-}
+
 
