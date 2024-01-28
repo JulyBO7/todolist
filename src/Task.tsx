@@ -3,6 +3,7 @@ import { Checkbox } from "./checkbox/Checkbox"
 import { EditableSpan } from "./editableSpan/EditableSpan"
 
 
+
 type TaskPropsType = {
     todolistId: string
     taskId: string
@@ -14,6 +15,7 @@ type TaskPropsType = {
 }
 
 export const Task = memo ((props: TaskPropsType) => {
+
 
     const changeTaskStatus = useCallback((value: boolean) => { 
         props.changeTaskStatus (props.todolistId, props.taskId, value)

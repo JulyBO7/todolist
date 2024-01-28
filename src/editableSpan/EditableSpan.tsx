@@ -2,7 +2,7 @@ import { memo, useState } from "react"
 
 
 type EditableSpanPropsType = {
-    title: string
+    title : string
     todolistId: string
     changeTitle: (newTitle: string)=> void
     removeItem:()=> void 

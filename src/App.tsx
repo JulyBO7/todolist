@@ -82,7 +82,7 @@ function App() {
 
     return (
         <div className="App">
-            <AddItemForm callBack={addTodolist} />
+            <AddItemForm addItem={addTodolist} />
             {
                 todolists.map(todolist => {
                     let taskForTodolist = tasks[todolist.id]

@@ -27,6 +27,8 @@ const TodolistWitnRedux = (props: TodolistPropsType) => {
     let dispatch = useDispatch()
 
     let allTasks = tasks[props.todolistId]
+
+
     // let tasksForTodolist = 
     //  if (props.filter === 'active'){
     //     tasksForTodolist = allTasks.filter(t => t.isDone === false)
@@ -58,7 +60,7 @@ const TodolistWitnRedux = (props: TodolistPropsType) => {
             {tasks[props.todolistId].map(el => {
             
                 return <li>
-                    <Checkbox check={el.isDone} callback={(value)=> changeTaskStatus(props.todolistId,el.id, value )}/>
+                    <Checkbox check={el.isDone} changeStatus={(value)=> changeTaskStatus(props.todolistId,el.id, value )}/>
 
                     {/* <input type="checkbox" checked={el.isDone} onChange={(e: ChangeEvent<HTMLInputElement>) => {onChangeHandler(el.id, e.currentTarget.checked )} } /> */}
                     <EditableSpan   title={el.title} 
@@ -83,7 +85,7 @@ const TodolistWitnRedux = (props: TodolistPropsType) => {
             <h3> {props.title}</h3>
             <div>
            
-                    <AddItemForm callBack={addTask} />
+                    <AddItemForm addItem={addTask} />
 
                 {/* {userMessageLengthTitle}
                 {userMessageStartTyping} */}

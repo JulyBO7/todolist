@@ -6,6 +6,7 @@ import { EditableSpan } from './../editableSpan/EditableSpan';
 import { Checkbox } from './../checkbox/Checkbox';
 import { Button } from "./Button";
 import { Task } from "../Task";
+import { TaskWithRedux } from "../TaskWithRedux";
 
 type TodolistPropsType = {
     todolistId: string
@@ -53,14 +54,14 @@ export const Todolist = memo((props: TodolistPropsType) => {
             <div>
                 <AddItemForm addItem={addTask} />
             </div>
-                {props.tasks.map(task => <Task  key={task.id} 
+                {props.tasks.map(task => <TaskWithRedux  key={task.id} 
                                                 todolistId ={props.todolistId} 
                                                 taskId ={task.id}
-                                                isDone={task.isDone}
-                                                title={task.title}
-                                                changeTaskTitle={changeTaskTitle}
-                                                removeTask={props.removeTask}
-                                                changeTaskStatus={props.changeTaskStatus}
+                                                // isDone={task.isDone}
+                                                // title={task.title}
+                                                // changeTaskTitle={changeTaskTitle}
+                                                // removeTask={props.removeTask}
+                                                // changeTaskStatus={props.changeTaskStatus}
 
                                                 />)}
             <div>
