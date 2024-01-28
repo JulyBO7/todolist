@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { memo, useState } from "react"
 
 
 type EditableSpanPropsType = {
@@ -9,7 +9,9 @@ type EditableSpanPropsType = {
 }
 
 
-export const EditableSpan = (props: EditableSpanPropsType) => {
+export const EditableSpan = memo ((props: EditableSpanPropsType) => {
+    console.log('EditableSpan')
+
     const [editMode, setEditmode] = useState<boolean>(false)
     const [title, setTitle] = useState<string>(props.title)
 
@@ -33,5 +35,5 @@ export const EditableSpan = (props: EditableSpanPropsType) => {
         </div>
 
     )
-}
+})
 

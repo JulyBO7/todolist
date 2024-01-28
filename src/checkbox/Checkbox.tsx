@@ -1,17 +1,19 @@
-import { ChangeEvent } from "react"
+import { ChangeEvent, memo } from "react"
 
 type CheckboxPropsType = {
     check: boolean
-    callback: (value: boolean) => void
+    changeStatus: (value: boolean) => void
 }
 
-export const Checkbox = (props: CheckboxPropsType) => {
-    const changeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        props.callback(e.currentTarget.checked)
+export const Checkbox = memo ((props: CheckboxPropsType) => {
+    console.log('Checkbox')
+    
+    const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        props.changeStatus(e.currentTarget.checked)
     }
     return (
         <>
-            <input type="checkbox" checked={props.check} onChange={changeHandler} />
+            <input type="checkbox" checked={props.check} onChange={onChangeHandler} />
         </>
     )
-}
+}) 

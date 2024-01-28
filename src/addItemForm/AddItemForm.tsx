@@ -1,12 +1,14 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, memo, useState } from "react";
 
 
 type AddItemFormTypeProps = {
-    callBack: (titleItem: string)=> void
+    addItem: (titleItem: string)=> void
 }
 
-export const AddItemForm = (props: AddItemFormTypeProps) => {
-        
+export const AddItemForm = memo ((props: AddItemFormTypeProps) => {
+    
+    console.log('AddItemForm')
+
     const [title, setTitle] = useState<string>('')
     const [error, setError] = useState<string | null>(null)
 
@@ -16,7 +18,7 @@ export const AddItemForm = (props: AddItemFormTypeProps) => {
     };
     const onClickBtnHeandler = () => {
         if (title.trim()){
-            props.callBack(title)
+            props.addItem(title)
             setTitle('')
             
         } else {
@@ -45,4 +47,4 @@ export const AddItemForm = (props: AddItemFormTypeProps) => {
             </div>
                
     )
-}
+})
