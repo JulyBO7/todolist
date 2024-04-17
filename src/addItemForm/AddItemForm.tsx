@@ -1,3 +1,5 @@
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
 import { ChangeEvent, memo, useState } from "react";
 
 
@@ -14,7 +16,11 @@ export const AddItemForm = memo ((props: AddItemFormTypeProps) => {
 
     const onChangeInputHeandler = (e: ChangeEvent<HTMLInputElement>) => {
         setTitle(e.currentTarget.value)
-        setError(null)
+        if (title.length > 20){
+            setError('Your text is too long!')
+        } else {
+            setError(null)
+        } 
     };
     const onClickBtnHeandler = () => {
         if (title.trim()){
@@ -22,28 +28,27 @@ export const AddItemForm = memo ((props: AddItemFormTypeProps) => {
             setTitle('')
             
         } else {
-            setError('Your text is not valiable!')
+            setError('Title is required')
         }
         
     }
     const onClickEnterHeandler = (e: any) => {
         e.key === 'Enter' && onClickBtnHeandler()
     }
-    const userMessageStartTyping: boolean | JSX.Element = !title.length && <p >Enter your text</p>
-    const userMessageLengthTitle: boolean | JSX.Element = title.length > 20 && <p style={{ color: 'red' }}>Your text is too long!</p>
     const isAddTaskBtnDisabled: boolean = title.length > 20 || title.length === 0
 
     return (
             <div>
-                <input value={title}
-                    onChange={onChangeInputHeandler}
-                    onKeyDown={onClickEnterHeandler} 
-                    placeholder="Please, enter your text"/>
-                <button onClick={onClickBtnHeandler}
-                    disabled={isAddTaskBtnDisabled}> + </button>
-                      {userMessageLengthTitle}
-                    {userMessageStartTyping}
-                    {error && <p> {error}</p>}
+                <TextField  variant="standard" 
+                            color="success"
+                            label="Enter a title"
+                            value={title}
+                            error={!!error}
+                            helperText={error}
+                            onChange={onChangeInputHeandler}
+                            onKeyDown={onClickEnterHeandler} />
+
+                <Button size="small" variant="outlined" onClick={onClickBtnHeandler} disabled={isAddTaskBtnDisabled} color="success"> + </Button>
             </div>
                
     )

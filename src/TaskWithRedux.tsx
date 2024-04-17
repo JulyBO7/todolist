@@ -1,5 +1,5 @@
 import { memo, useCallback } from "react"
-import { Checkbox } from "./checkbox/Checkbox"
+import { TaskCheckbox } from "./checkbox/TaskCheckbox"
 import { EditableSpan } from "./editableSpan/EditableSpan"
 import { useDispatch, useSelector } from "react-redux"
 import { AppRootStateType } from "./state/store"
@@ -35,7 +35,7 @@ export const TaskWithRedux = memo ((props: TaskPropsType) => {
     return (
         <div>
             
-            <Checkbox check={task?.isDone} changeStatus={changeTaskStatus} />
+            <TaskCheckbox check={task?.isDone} changeStatus={changeTaskStatus} />
 
             <EditableSpan   title={task.title}
                             todolistId={props.todolistId}

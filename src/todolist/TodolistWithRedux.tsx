@@ -3,7 +3,7 @@ import { FilterTaskType, ItemTaskType, TaskType, TasksType } from "../App"
 import { AddItemForm } from "../addItemForm/AddItemForm"
 import './Todolist.css'
 import { EditableSpan } from './../editableSpan/EditableSpan';
-import { Checkbox } from './../checkbox/Checkbox';
+import { TaskCheckbox } from '../checkbox/TaskCheckbox';
 import { useDispatch, useSelector } from "react-redux";
 import { AppRootStateType } from "../state/store";
 import { addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC } from "../state/tasksReducer";
@@ -60,7 +60,7 @@ const TodolistWitnRedux = (props: TodolistPropsType) => {
             {tasks[props.todolistId].map(el => {
             
                 return <li>
-                    <Checkbox check={el.isDone} changeStatus={(value)=> changeTaskStatus(props.todolistId,el.id, value )}/>
+                    <TaskCheckbox check={el.isDone} changeStatus={(value)=> changeTaskStatus(props.todolistId,el.id, value )}/>
 
                     {/* <input type="checkbox" checked={el.isDone} onChange={(e: ChangeEvent<HTMLInputElement>) => {onChangeHandler(el.id, e.currentTarget.checked )} } /> */}
                     <EditableSpan   title={el.title} 

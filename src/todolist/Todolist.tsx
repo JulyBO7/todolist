@@ -1,12 +1,10 @@
-import { ChangeEvent, memo, useCallback, useState } from "react"
+import { memo, useCallback, useState } from "react"
 import { FilterTaskType, ItemTaskType, TaskType } from "../App"
 import { AddItemForm } from "../addItemForm/AddItemForm"
 import './Todolist.css'
 import { EditableSpan } from './../editableSpan/EditableSpan';
-import { Checkbox } from './../checkbox/Checkbox';
-import { Button } from "./Button";
+import { FilterButton } from "./Button";
 import { Task } from "../Task";
-import { TaskWithRedux } from "../TaskWithRedux";
 
 type TodolistPropsType = {
     todolistId: string
@@ -47,35 +45,32 @@ export const Todolist = memo((props: TodolistPropsType) => {
 
     return (
         <div>
-            <EditableSpan   title={props.title} 
+            <h3><EditableSpan   title={props.title} 
                             todolistId={props.todolistId} 
                             changeTitle={changeTodolistTitle}
                             removeItem = {removeTodolist}/>
+            </h3>
             <div>
                 <AddItemForm addItem={addTask} />
             </div>
-                {props.tasks.map(task => <TaskWithRedux  key={task.id} 
-                                                todolistId ={props.todolistId} 
+                {props.tasks.map(task => <Task  key={task.id}  
+                                                todolistId ={props.todolistId}
                                                 taskId ={task.id}
-                                                // isDone={task.isDone}
-                                                // title={task.title}
-                                                // changeTaskTitle={changeTaskTitle}
-                                                // removeTask={props.removeTask}
-                                                // changeTaskStatus={props.changeTaskStatus}
-
+                                                isDone={task.isDone}
+                                                title={task.title}
+                                                changeTaskTitle={changeTaskTitle}
+                                                removeTask={props.removeTask}
+                                                changeTaskStatus={props.changeTaskStatus} 
+                
+                                                // <TaskWithRedux  key={task.id} 
+                                                // todolistId ={props.todolistId} 
+                                                // taskId ={task.id}
                                                 />)}
             <div>
-                <Button callback={onAllClickHeandler} filter = {props.filter === 'all'? 'active' : '' } title={'all'}  />
-                <Button callback={onComplitedClickHeandler} filter = {props.filter === 'completed'? 'active' : ''} title={'active'}/>
-                <Button callback={onActiveClickHeandler} filter = {props.filter === 'active' ? 'active' : ''} title={'completed'}/>
+                <FilterButton callback={onAllClickHeandler} filter = {props.filter === 'all'? 'active' : '' } title={'all'}  />
+                <FilterButton callback={onComplitedClickHeandler} filter = {props.filter === 'completed'? 'active' : ''} title={'active'}/>
+                <FilterButton callback={onActiveClickHeandler} filter = {props.filter === 'active' ? 'active' : ''} title={'completed'}/>
 
-
-                {/* <button onClick={onAllClickHeandler} className={props.filter === 'all' 
-                ? 'active' : '' }>All</button>
-                <button onClick={onActiveClickHeandler} className={props.filter === 'active' 
-                ? 'active' : '' } >Active</button>
-                <button onClick={onComplitedClickHeandler} className={props.filter === 'completed' 
-                ? 'active' : '' } >Completed</button> */}
             </div>
         </div>
     )

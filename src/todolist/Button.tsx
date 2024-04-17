@@ -1,5 +1,7 @@
 import { memo } from "react"
 import { FilterTaskType } from "../AppWithRedux"
+import Button from '@mui/material/Button'
+
 
 type ButtonType = {
     callback: ()=> void
@@ -7,11 +9,14 @@ type ButtonType = {
     title: string
 }
 
-export const Button = memo((props: ButtonType) => {
+export const FilterButton = memo((props: ButtonType) => {
     return (
-        <div>
-            <button onClick={props.callback} className={props.filter}> {props.title}</button>
-        </div>
+            <Button size="small"
+                color="success"
+                onClick={props.callback} 
+                variant={props.filter === "active" ? "contained" : "text" }>
+                    {props.title}
+            </Button>
 
     )
 }

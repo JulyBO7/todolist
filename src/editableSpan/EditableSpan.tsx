@@ -1,15 +1,18 @@
+import IconButton from "@mui/material/IconButton"
 import { memo, useState } from "react"
+import DeleteIcon from '@mui/icons-material/Delete'
+import TextField from "@mui/material/TextField"
 
 
 type EditableSpanPropsType = {
-    title : string
+    title: string
     todolistId: string
-    changeTitle: (newTitle: string)=> void
-    removeItem:()=> void 
+    changeTitle: (newTitle: string) => void
+    removeItem: () => void
 }
 
 
-export const EditableSpan = memo ((props: EditableSpanPropsType) => {
+export const EditableSpan = memo((props: EditableSpanPropsType) => {
     console.log('EditableSpan')
 
     const [editMode, setEditmode] = useState<boolean>(false)
@@ -25,14 +28,23 @@ export const EditableSpan = memo ((props: EditableSpanPropsType) => {
         }
     }
     return (
-        <div>
+        <>
             {editMode
-                ? <input    value={title} autoFocus onBlur={onBlurHeandler}
+                ? 
+                <TextField  variant="standard" 
+                            color="success"
+                            autoFocus
+                            label="Enter a title"
+                            value={title}
+                            onBlur={onBlurHeandler}
                             onChange={(event) => setTitle(event.currentTarget.value)} />
+              
                 : <span onDoubleClick={onDoubleClickHeandler}> {props.title} </span>}
 
-                <button onClick={props.removeItem}> X </button>
-        </div>
+            <IconButton aria-label="delete" onClick={props.removeItem}>
+                <DeleteIcon />
+            </IconButton>
+        </>
 
     )
 })

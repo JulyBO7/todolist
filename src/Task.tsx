@@ -1,5 +1,5 @@
 import { memo, useCallback } from "react"
-import { Checkbox } from "./checkbox/Checkbox"
+import { TaskCheckbox } from "./checkbox/TaskCheckbox"
 import { EditableSpan } from "./editableSpan/EditableSpan"
 
 
@@ -30,7 +30,7 @@ export const Task = memo ((props: TaskPropsType) => {
 
     return (
         <div>
-            <Checkbox check={props.isDone} changeStatus={changeTaskStatus} />
+            <TaskCheckbox check={props.isDone} changeStatus={changeTaskStatus} />
 
             <EditableSpan   title={props.title}
                             todolistId={props.todolistId}
