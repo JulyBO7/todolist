@@ -36,7 +36,7 @@ type Story = StoryObj<typeof Task>;
 export const TaskIsNotDoneStory: Story = {
     args: {  
     taskId: '1',
-    isDone: false,
+    status: 0,
     title: 'HTML',
     todolistId: 'fgdosrg8rgjuh'}
     // changeTaskStatus: action('Status changed inside Task'),
@@ -46,7 +46,7 @@ export const TaskIsNotDoneStory: Story = {
 
 export const TaskIsDoneStory: Story = {
   args: {
-    isDone: true, 
+    status: 2, 
     title: 'Js',
   },
 };

@@ -3,7 +3,7 @@ import { TaskCheckbox } from "./checkbox/TaskCheckbox"
 import { EditableSpan } from "./editableSpan/EditableSpan"
 import { useDispatch, useSelector } from "react-redux"
 import { AppRootStateType } from "./state/store"
-import { ItemTaskType } from "./AppWithRedux"
+import { ItemTaskType, TaskStatuses } from "./api/todolistApi"
 import { changeTaskStatusAC, changeTaskTitleAC, removeTaskAC } from "./state/tasksReducer"
 
 
@@ -20,7 +20,7 @@ export const TaskWithRedux = memo ((props: TaskPropsType) => {
     const dispatch = useDispatch()
 
 
-    const changeTaskStatus = useCallback((value: boolean) => { 
+    const changeTaskStatus = useCallback((value: TaskStatuses) => { 
         dispatch(changeTaskStatusAC(props.todolistId, props.taskId, value))
     }, [props.todolistId,props.taskId])
 
@@ -35,7 +35,7 @@ export const TaskWithRedux = memo ((props: TaskPropsType) => {
     return (
         <div>
             
-            <TaskCheckbox check={task?.isDone} changeStatus={changeTaskStatus} />
+            <TaskCheckbox check={task?.status === TaskStatuses.Completed ? true : false} changeStatus={changeTaskStatus} />
 
             <EditableSpan   title={task.title}
                             todolistId={props.todolistId}
