@@ -9,6 +9,11 @@ const initialState = {
 }
 type ActionsType = ChangeIsLoggedInActionType
 type ChangeIsLoggedInActionType = ReturnType<typeof setIsLoggedInAC>
+type FormType = {
+    email: string
+    password: string
+    rememberMe: boolean
+}
 
 export const authReducer = (state=initialState, action: ActionsType)=> {
     switch(action.type){
@@ -26,6 +31,7 @@ export const setIsLoggedInTC = ()=> {
         .then(res => {
             if (res.data.resultCode === 0){
                 dispatch(setIsLoggedInAC(true))
+                dispatch(changeAppStatusAC('succeeded'))
             } else {
                 errorAppServerHeandler(dispatch, res.data)
             }
@@ -40,4 +46,49 @@ export const setIsLoggedInTC = ()=> {
         )
     }
 }
+export const logInTC = (form: FormType)=> {
+    return (dispatch: Dispatch<ChangeIsLoggedInActionType | ChangeAppStatusActionType>)=> {
+        dispatch(changeAppStatusAC('loading'))
+        autnApi.logIn(form)
+        .then(res => {
+            if (res.data.resultCode === 0){
+                dispatch(setIsLoggedInAC(true))
+                dispatch(changeAppStatusAC('succeeded'))
+            } else {
+                errorAppServerHeandler(dispatch, res.data)
+            }
+        })
+        .catch((error: AxiosError<{message: string}>) => {
+            if (error.response?.data){
+                errorNetworkHeandler(dispatch, error.response.data)
+            } else{
+                errorNetworkHeandler(dispatch, error)
+            }
+        }
+        )
+    }
+}
+export const logOutTC = ()=> {
+    return (dispatch: Dispatch<ChangeIsLoggedInActionType | ChangeAppStatusActionType>)=> {
+        dispatch(changeAppStatusAC('loading'))
+        autnApi.logOut()
+        .then(res => {
+            if (res.data.resultCode === 0){
+                dispatch(setIsLoggedInAC(false))
+                dispatch(changeAppStatusAC('succeeded'))
+            } else {
+                errorAppServerHeandler(dispatch, res.data)
+            }
+        })
+        .catch((error: AxiosError<{message: string}>) => {
+            if (error.response?.data){
+                errorNetworkHeandler(dispatch, error.response.data)
+            } else{
+                errorNetworkHeandler(dispatch, error)
+            }
+        }
+        )
+    }
+}
+
 

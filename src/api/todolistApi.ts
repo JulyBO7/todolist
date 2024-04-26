@@ -34,6 +34,12 @@ export const taskApi = {
 export const autnApi = {
     me(){
         return instanse.get<ResponseType<{id: number, email: string, login: string}>>('/auth/me')
+    },
+    logIn(payload: {email: string, password: string}){
+        return instanse.post<ResponseType<{userId: number}>>('/auth/login', payload)
+    },
+    logOut(){
+        return instanse.delete<ResponseType>('/auth/login')
     }
 }
 export type TodolistFromServerType = {

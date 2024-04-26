@@ -17,11 +17,10 @@ import { ItemTaskType} from './api/todolistApi';
 import { RequestStatusType } from './state/appReducer';
 import LinearProgress from '@mui/material/LinearProgress';
 import {ErrorSnackBar} from './snackBar/ErrorSnackBar';
-import { setIsLoggedInTC } from './featuries/auth-reducer';
+import { logOutTC, setIsLoggedInTC } from './featuries/auth-reducer';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { TodolistsList } from './TodolistList';
 import { Login } from './featuries/Login';
-
 
 export type TasksType = {
     [todolistID: string]: Array<ItemTaskType>
@@ -37,13 +36,16 @@ export type TodolistType = {
 function AppWithRedux() {
     console.log('AppWithRedux')
     let status = useSelector<AppRootStateType, RequestStatusType>(state=> state.app.appStatus)
-    // let isAuth = useSelector<AppRootStateType, boolean>(state=> state.auth.isLoggedIn)
+    let isAuth = useSelector<AppRootStateType, boolean>(state=> state.auth.isLoggedIn)
     let dispatch = useAppDispatch()
     
     useEffect(()=> {
+        console.log('effect AppWithRedux')
             dispatch(setIsLoggedInTC())
     }, [])
-    
+    const onLogOutHeandler = ()=> {
+        dispatch(logOutTC())
+    }
     return (
         <div>
             <AppBar position="static" color="success">
@@ -51,7 +53,7 @@ function AppWithRedux() {
                     <IconButton color="inherit">
                         <MenuIcon />
                     </IconButton>
-                    <Button color="inherit">Login</Button>
+                    <Button color="inherit" onClick={onLogOutHeandler}> {isAuth ? 'Log Out' : ''}</Button>
                 </Toolbar>
             </AppBar>
             {status === "loading" && <LinearProgress color="inherit" />}

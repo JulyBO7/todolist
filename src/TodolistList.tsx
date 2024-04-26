@@ -11,6 +11,7 @@ import Container from "@mui/material/Container"
 import { AddItemForm } from "./addItemForm/AddItemForm"
 
 export const TodolistsList = () => {
+    console.log("TodolistsList")
     const isAuth = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
     const todolists = useSelector<AppRootStateType, TodolistType[]>(state => state.todolists)
     const dispatch = useAppDispatch()
@@ -20,10 +21,12 @@ export const TodolistsList = () => {
     }, [dispatch])
 
     useEffect(() => {
+        if (!isAuth) return 
+        console.log('effect TodolistsList ')
         dispatch(setTodolistsTC())
     }, [])
 
-    // if (!isAuth) return <Navigate to='/login' />
+    if (!isAuth) return <Navigate to='/login' />
     return (
         <Container fixed>
             <Grid container>
