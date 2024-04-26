@@ -4,11 +4,13 @@ import { todolistsReducer } from './todolistsReducer'
 import { AnyAction, applyMiddleware, combineReducers, createStore} from 'redux'
 import { useDispatch } from 'react-redux'
 import { appReducer } from './appReducer'
+import { authReducer } from '../featuries/auth-reducer'
 
 const rootReducer = combineReducers({
     tasks: tasksReducer,
     todolists: todolistsReducer,
-    app: appReducer
+    app: appReducer, 
+    auth: authReducer
 })
 export const store = createStore(rootReducer,applyMiddleware(thunk))
 

@@ -16,11 +16,6 @@ export const AddItemForm = memo ((props: AddItemFormTypeProps) => {
 
     const onChangeInputHeandler = (e: ChangeEvent<HTMLInputElement>) => {
         setTitle(e.currentTarget.value)
-        if (title.length > 20){
-            setError('Your text is too long!')
-        } else {
-            setError(null)
-        } 
     };
     const onClickBtnHeandler = () => {
         if (title.trim()){
@@ -35,7 +30,7 @@ export const AddItemForm = memo ((props: AddItemFormTypeProps) => {
     const onClickEnterHeandler = (e: any) => {
         e.key === 'Enter' && onClickBtnHeandler()
     }
-    const isAddTaskBtnDisabled: boolean = title.length > 20 || title.length === 0
+    // const isAddTaskBtnDisabled: boolean = title.length > 20 || title.length === 0
 
     return (
             <div>
@@ -48,7 +43,7 @@ export const AddItemForm = memo ((props: AddItemFormTypeProps) => {
                             onChange={onChangeInputHeandler}
                             onKeyDown={onClickEnterHeandler} />
 
-                <Button size="small" variant="outlined" onClick={onClickBtnHeandler} disabled={isAddTaskBtnDisabled} color="success"> + </Button>
+                <Button size="small" variant="outlined" onClick={onClickBtnHeandler} color="success"> + </Button>
             </div>
                
     )

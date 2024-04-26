@@ -16,6 +16,11 @@ import Paper from '@mui/material/Paper';
 import { ItemTaskType} from './api/todolistApi';
 import { RequestStatusType } from './state/appReducer';
 import LinearProgress from '@mui/material/LinearProgress';
+import {ErrorSnackBar} from './snackBar/ErrorSnackBar';
+import { setIsLoggedInTC } from './featuries/auth-reducer';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import { TodolistsList } from './TodolistList';
+import { Login } from './featuries/Login';
 
 
 export type TasksType = {
@@ -31,18 +36,14 @@ export type TodolistType = {
 
 function AppWithRedux() {
     console.log('AppWithRedux')
-    let todolists = useSelector<AppRootStateType,TodolistType[]>(state => state.todolists)
     let status = useSelector<AppRootStateType, RequestStatusType>(state=> state.app.appStatus)
+    // let isAuth = useSelector<AppRootStateType, boolean>(state=> state.auth.isLoggedIn)
     let dispatch = useAppDispatch()
     
     useEffect(()=> {
-            dispatch(setTodolistsTC())
+            dispatch(setIsLoggedInTC())
     }, [])
-
-    const addTodolist = useCallback((titleItem: string) => {
-        dispatch(addTodolistTC(titleItem))
-    }, [dispatch])
-
+    
     return (
         <div>
             <AppBar position="static" color="success">
@@ -54,27 +55,11 @@ function AppWithRedux() {
                 </Toolbar>
             </AppBar>
             {status === "loading" && <LinearProgress color="inherit" />}
-            <Container fixed>
-                <Grid container>
-                    <AddItemForm addItem={addTodolist} />
-                </Grid>
-                <Grid container spacing={4} rowSpacing={1} >
-                    {todolists.map(todolist => {
-                            return (
-                                <Grid item  key={todolist.id}>
-                                    <Paper>
-                                        <Todolist
-                                            todolistId={todolist.id}
-                                            title={todolist.title}
-                                            filter={todolist.filter}
-                                        />
-                                    </Paper>
-                                </Grid>)
-                        }
-                        )
-                    }
-                </Grid>
-            </Container>
+                    <Routes>
+                       <Route path="/" element={<TodolistsList />} />
+                       <Route path="/login" element={<Login />} />
+                    </Routes>
+            <ErrorSnackBar/>
         </div>
     )
 }

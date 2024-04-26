@@ -31,13 +31,18 @@ export const taskApi = {
         return instanse.delete<ResponseType>(`todo-lists/${todolistId}/tasks/${taskId}`)
     }
 }
+export const autnApi = {
+    me(){
+        return instanse.get<ResponseType<{id: number, email: string, login: string}>>('/auth/me')
+    }
+}
 export type TodolistFromServerType = {
     id: string
     title: string
     addedDate: Date
     order: number
 }
-type ResponseType<D={}> = {
+export type ResponseType<D={}> = {
     resultCode: number
     messages: string[]
     fieldsErrors: string[]

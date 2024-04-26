@@ -3,6 +3,8 @@ import { TodolistFromServerType } from "../api/todolistApi";
 import { Dispatch } from "redux";
 import { todolistApi } from './../api/todolistApi';
 import { ChangeAppStatusActionType, changeAppStatusAC } from "./appReducer";
+import axios from "axios";
+import { errorAppServerHeandler, errorNetworkHeandler } from "../utils/errorsUtil";
 
 export type ActionType =  ChangeFilterActionType 
                         | AddTodolistActionType 
@@ -50,7 +52,15 @@ export const setTodolistsTC = ()=> {
             dispatch(setTodolistsAC(response.data))
             dispatch(changeAppStatusAC('succeeded'))
         } catch (error){
-            alert(error)
+            if(axios.isAxiosError(error)){
+                if(error.response){
+                    errorNetworkHeandler(dispatch,error.response.data)
+                }else{
+                    errorNetworkHeandler(dispatch,error)
+                }
+            } else{
+                errorNetworkHeandler(dispatch,error as Error)
+            }
         }
     }
 }
@@ -62,10 +72,20 @@ export const addTodolistTC = (title: string)=> {
             let response = await todolistApi.addTodo(objForRequest)
             if(response.data.resultCode ===0){
                 dispatch(addTodolistAC(response.data.data.item))
+                dispatch(changeAppStatusAC('succeeded'))
+            } else{
+                errorAppServerHeandler(dispatch,response.data)
             }
-            dispatch(changeAppStatusAC('succeeded'))
         } catch (error){
-            alert(error)
+            if(axios.isAxiosError(error)){
+                if(error.response){
+                    errorNetworkHeandler(dispatch,error.response.data)
+                }else{
+                    errorNetworkHeandler(dispatch,error)
+                }
+            } else{
+                errorNetworkHeandler(dispatch,error as Error)
+            }
         }
     }
 }
@@ -76,10 +96,20 @@ export const removeTodolistTC = (id: string)=> {
             let response = await todolistApi.removeTodo(id)
             if(response.data.resultCode ===0){
                 dispatch(removeTodolistAC(id))
+                dispatch(changeAppStatusAC('succeeded'))
+            }else{
+                errorAppServerHeandler(dispatch,response.data)
             }
-            dispatch(changeAppStatusAC('succeeded'))
         } catch (error){
-            alert(error)
+            if(axios.isAxiosError(error)){
+                if(error.response){
+                    errorNetworkHeandler(dispatch,error.response.data)
+                }else{
+                    errorNetworkHeandler(dispatch,error)
+                }
+            } else{
+                errorNetworkHeandler(dispatch,error as Error)
+            }
         }
     }
 }
@@ -91,10 +121,20 @@ export const updateTitleTodolistTC = (id: string,title: string)=> {
             let response = await todolistApi.updateTodo(id,todoForRequest)
             if(response.data.resultCode ===0){
                 dispatch(changeTodolistTitleAC(id,title))
+                dispatch(changeAppStatusAC('succeeded'))
+            }else{
+                errorAppServerHeandler(dispatch,response.data)
             }
-            dispatch(changeAppStatusAC('succeeded'))
         } catch (error){
-            alert(error)
+            if(axios.isAxiosError(error)){
+                if(error.response){
+                    errorNetworkHeandler(dispatch,error.response.data)
+                }else{
+                    errorNetworkHeandler(dispatch,error)
+                }
+            } else{
+                errorNetworkHeandler(dispatch,error as Error)
+            }
         }
     }
 }

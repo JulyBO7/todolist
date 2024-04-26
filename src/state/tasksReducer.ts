@@ -3,7 +3,9 @@ import { AddTodolistActionType, RemoveTodolistActionType, SetTodolistsACActionTy
 import { Dispatch } from "redux";
 import { ItemTaskType, TaskStatuses, taskApi } from "../api/todolistApi";
 import { AppRootStateType } from "./store";
-import { ChangeAppStatusActionType, changeAppStatusAC } from "./appReducer";
+import { ChangeAppStatusActionType, SetAppErrorActionType, changeAppStatusAC, setAppErrorAC } from "./appReducer";
+import { errorAppServerHeandler, errorNetworkHeandler } from "../utils/errorsUtil";
+import axios from "axios";
 
 type TaskReducerActionType =  AddTaskACType 
                             | RemoveTaskACType 
@@ -64,69 +66,152 @@ export const setTodolistsAC = (todolistId: string,tasks:ItemTaskType[])=> ({type
 
 export const setTasksTC = (todolistId: string)=> {
     return async (dispatch: DispatchThunkType)=> {
-        dispatch(changeAppStatusAC('loading'))
-        let res = await taskApi.setTasks(todolistId)
-        dispatch(setTodolistsAC(todolistId, res.data.items))
-        dispatch(changeAppStatusAC('succeeded'))
+        try{
+            dispatch(changeAppStatusAC('loading'))
+            let res = await taskApi.setTasks(todolistId)
+            dispatch(setTodolistsAC(todolistId, res.data.items))
+            dispatch(changeAppStatusAC('succeeded'))
+        }catch (error){
+            if (axios.isAxiosError<{message: string}>(error)){
+                if (error.response){
+                    errorNetworkHeandler(dispatch, error.response.data)
+                } else{
+                    errorNetworkHeandler(dispatch, error)
+                }
+            }else{
+                errorNetworkHeandler(dispatch, error as Error)
+            }
+        }
+       
     }
 }
 export const addTasksTC = (todolistId: string, title: string)=> {
     return async (dispatch: DispatchThunkType)=> {
-        const taskForRequest = {title}
-        dispatch(changeAppStatusAC('loading'))
-        let res = await taskApi.addTask(todolistId, taskForRequest)
-        dispatch(addTaskAC(todolistId, res.data.data.item))
-        dispatch(changeAppStatusAC('succeeded'))
+        try{
+            const taskForRequest = {title}
+            dispatch(changeAppStatusAC('loading'))
+            let res = await taskApi.addTask(todolistId, taskForRequest)
+            if (res.data.resultCode === 0){
+                dispatch(addTaskAC(todolistId, res.data.data.item))
+                dispatch(changeAppStatusAC('succeeded'))
+            } else {
+                errorAppServerHeandler(dispatch,res.data)        
+            }
+        } catch(error){
+            if (axios.isAxiosError<{message: string}>(error)){
+                if(error.response){
+                    errorNetworkHeandler(dispatch, error.response.data)
+                } else{
+                    errorNetworkHeandler(dispatch, error)
+                }
+            } else{
+                errorNetworkHeandler(dispatch, error as Error)
+            }
+        }
+            
+        }
     }
-}
+
 export const removeTaskTC = (todolistId: string, taskId: string)=> {
     return async (dispatch: DispatchThunkType)=> {
-        dispatch(changeAppStatusAC('loading'))
-        let res = await taskApi.deleteTask(todolistId, taskId)
-        dispatch(removeTaskAC(todolistId, taskId))
-        dispatch(changeAppStatusAC('succeeded'))
+        try{
+            dispatch(changeAppStatusAC('loading'))
+            let res = await taskApi.deleteTask(todolistId, taskId)
+            if(res.data.resultCode===0){
+                dispatch(removeTaskAC(todolistId, taskId))
+                dispatch(changeAppStatusAC('succeeded'))
+            } else{
+                errorAppServerHeandler(dispatch,res.data)        
+            }
+        } catch (error){
+            if (axios.isAxiosError(error)){
+                if(error.response){
+                    errorNetworkHeandler(dispatch, error.response.data)
+                } else{
+                    errorNetworkHeandler(dispatch, error)
+                }
+            } else{
+                errorNetworkHeandler(dispatch, error as Error)
+            }
+        } 
     }
 }
 export const changeTaskStatusTC = (todolistId:string, taskId:string,newStatus:TaskStatuses)=> {
     return async (dispatch: DispatchThunkType, getState: ()=> AppRootStateType)=> {
-        const taskForRequest = getState().tasks[todolistId].find(task=> taskId === task.id)
-        if (taskForRequest){
-            const newTaskForRequest = { title: taskForRequest.title,
-                                        description:taskForRequest.description,
-                                        status: newStatus,
-                                        priority: taskForRequest.priority,
-                                        startDate: taskForRequest.startDate,
-                                        deadline: taskForRequest.deadline
-                                    }
-            dispatch(changeAppStatusAC('loading'))                        
-            let res = await taskApi.updateTask(todolistId,taskId, newTaskForRequest)
-            if(res.data.resultCode ===0){
-                dispatch(changeTaskStatusAC(todolistId,taskId,newStatus))
-                dispatch(changeAppStatusAC('succeeded'))
+        try{
+            const taskForRequest = getState().tasks[todolistId].find(task=> taskId === task.id)
+            if (taskForRequest){
+                const newTaskForRequest = { title: taskForRequest.title,
+                                            description:taskForRequest.description,
+                                            status: newStatus,
+                                            priority: taskForRequest.priority,
+                                            startDate: taskForRequest.startDate,
+                                            deadline: taskForRequest.deadline
+                                        }
+                dispatch(changeAppStatusAC('loading'))                        
+                let res = await taskApi.updateTask(todolistId,taskId, newTaskForRequest)
+                if(res.data.resultCode ===0){
+                    dispatch(changeTaskStatusAC(todolistId,taskId,newStatus))
+                    dispatch(changeAppStatusAC('succeeded'))
+                }else{
+                    errorAppServerHeandler(dispatch,res.data)        
+                }
+            }
+        }catch(error){
+            if(axios.isAxiosError(error)){
+                if(error.response){
+                    errorNetworkHeandler(dispatch, error.response.data)
+                } else{
+                    errorNetworkHeandler(dispatch, error)
+                }
+            } else{
+                errorNetworkHeandler(dispatch, error as Error)
             }
         }
+   
        
     }
 }
 export const changeTaskTitleTC = (todolistId:string, taskId:string, title: string)=> {
     return async (dispatch: DispatchThunkType, getState: ()=> AppRootStateType)=> {
-        const taskForRequest = getState().tasks[todolistId].find(task=> taskId === task.id)
-        if (taskForRequest){
-            const newTaskForRequest = { title,
-                                        description:taskForRequest.description,
-                                        status: taskForRequest.status,
-                                        priority: taskForRequest.priority,
-                                        startDate: taskForRequest.startDate,
-                                        deadline: taskForRequest.deadline
-                                    }
-            dispatch(changeAppStatusAC('loading'))                        
-            let res = await taskApi.updateTask(todolistId,taskId, newTaskForRequest)
-            if(res.data.resultCode ===0){
-                dispatch(changeTaskTitleAC(todolistId,taskId,title))
-                dispatch(changeAppStatusAC('succeeded'))
+        try{
+            const taskForRequest = getState().tasks[todolistId].find(task=> taskId === task.id)
+            if (taskForRequest){
+                const newTaskForRequest = { title,
+                                            description:taskForRequest.description,
+                                            status: taskForRequest.status,
+                                            priority: taskForRequest.priority,
+                                            startDate: taskForRequest.startDate,
+                                            deadline: taskForRequest.deadline
+                                        }
+                dispatch(changeAppStatusAC('loading'))                        
+                let res = await taskApi.updateTask(todolistId,taskId, newTaskForRequest)
+                if(res.data.resultCode ===0){
+                    dispatch(changeTaskTitleAC(todolistId,taskId,title))
+                    dispatch(changeAppStatusAC('succeeded'))
+                }else{
+                    errorAppServerHeandler(dispatch,res.data)        
+                }
+            }
+        } catch(error){
+            if(axios.isAxiosError(error)){
+                if(error.response){
+                    errorNetworkHeandler(dispatch, error.response.data)
+                } else{
+                    errorNetworkHeandler(dispatch, error)
+                }
+            } else{
+                errorNetworkHeandler(dispatch, error as Error)
             }
         }
+   
        
     }
 }
-type DispatchThunkType = Dispatch<SetTodolistsAC | AddTaskACType | ChangeTaskStatusACType |ChangeTaskTitleACType| RemoveTaskACType | ChangeAppStatusActionType>
+type DispatchThunkType = Dispatch<  SetTodolistsAC 
+                                    |AddTaskACType 
+                                    |ChangeTaskStatusACType 
+                                    |ChangeTaskTitleACType
+                                    |RemoveTaskACType 
+                                    |ChangeAppStatusActionType 
+                                    |SetAppErrorActionType>
