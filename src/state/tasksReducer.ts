@@ -1,11 +1,10 @@
 import { TasksType } from "../AppWithRedux";
 import { AddTodolistActionType, RemoveTodolistActionType, SetTodolistsACActionType } from "./todolistsReducer";
-import { Dispatch } from "redux";
 import { ItemTaskType, TaskStatuses, taskApi } from "../api/todolistApi";
-import { AppRootStateType } from "./store";
-import { ChangeAppStatusActionType, SetAppErrorActionType, changeAppStatusAC, setAppErrorAC } from "./appReducer";
 import { errorAppServerHeandler, errorNetworkHeandler } from "../utils/errorsUtil";
 import axios from "axios";
+import { AppDispatch, AppRootState } from "./store";
+import { appActions } from "./appReducer";
 
 type TaskReducerActionType =  AddTaskACType 
                             | RemoveTaskACType 
@@ -65,12 +64,12 @@ export const changeTaskTitleAC = (todolistId: string, taskId: string, newTitleVa
 export const setTodolistsAC = (todolistId: string,tasks:ItemTaskType[])=> ({type: 'SET-TASKS', todolistId, tasks} as const)
 
 export const setTasksTC = (todolistId: string)=> {
-    return async (dispatch: DispatchThunkType)=> {
+    return async (dispatch: AppDispatch)=> {
         try{
-            dispatch(changeAppStatusAC('loading'))
+            dispatch(appActions.changeAppStatusAC({status: 'loading'}))
             let res = await taskApi.setTasks(todolistId)
             dispatch(setTodolistsAC(todolistId, res.data.items))
-            dispatch(changeAppStatusAC('succeeded'))
+            dispatch(appActions.changeAppStatusAC({status: 'succeeded'}))
         }catch (error){
             if (axios.isAxiosError<{message: string}>(error)){
                 if (error.response){
@@ -86,14 +85,14 @@ export const setTasksTC = (todolistId: string)=> {
     }
 }
 export const addTasksTC = (todolistId: string, title: string)=> {
-    return async (dispatch: DispatchThunkType)=> {
+    return async (dispatch: AppDispatch)=> {
         try{
             const taskForRequest = {title}
-            dispatch(changeAppStatusAC('loading'))
+            dispatch(appActions.changeAppStatusAC({status: 'loading'}))
             let res = await taskApi.addTask(todolistId, taskForRequest)
             if (res.data.resultCode === 0){
                 dispatch(addTaskAC(todolistId, res.data.data.item))
-                dispatch(changeAppStatusAC('succeeded'))
+                dispatch(appActions.changeAppStatusAC({status: 'succeeded'}))
             } else {
                 errorAppServerHeandler(dispatch,res.data)        
             }
@@ -113,13 +112,13 @@ export const addTasksTC = (todolistId: string, title: string)=> {
     }
 
 export const removeTaskTC = (todolistId: string, taskId: string)=> {
-    return async (dispatch: DispatchThunkType)=> {
+    return async (dispatch: AppDispatch)=> {
         try{
-            dispatch(changeAppStatusAC('loading'))
+            dispatch(appActions.changeAppStatusAC({status: 'loading'}))
             let res = await taskApi.deleteTask(todolistId, taskId)
             if(res.data.resultCode===0){
                 dispatch(removeTaskAC(todolistId, taskId))
-                dispatch(changeAppStatusAC('succeeded'))
+                dispatch(appActions.changeAppStatusAC({status: 'succeeded'}))
             } else{
                 errorAppServerHeandler(dispatch,res.data)        
             }
@@ -137,7 +136,7 @@ export const removeTaskTC = (todolistId: string, taskId: string)=> {
     }
 }
 export const changeTaskStatusTC = (todolistId:string, taskId:string,newStatus:TaskStatuses)=> {
-    return async (dispatch: DispatchThunkType, getState: ()=> AppRootStateType)=> {
+    return async (dispatch: AppDispatch, getState: ()=> AppRootState)=> {
         try{
             const taskForRequest = getState().tasks[todolistId].find(task=> taskId === task.id)
             if (taskForRequest){
@@ -148,11 +147,11 @@ export const changeTaskStatusTC = (todolistId:string, taskId:string,newStatus:Ta
                                             startDate: taskForRequest.startDate,
                                             deadline: taskForRequest.deadline
                                         }
-                dispatch(changeAppStatusAC('loading'))                        
+                dispatch(appActions.changeAppStatusAC({status: 'loading'}))                        
                 let res = await taskApi.updateTask(todolistId,taskId, newTaskForRequest)
                 if(res.data.resultCode ===0){
                     dispatch(changeTaskStatusAC(todolistId,taskId,newStatus))
-                    dispatch(changeAppStatusAC('succeeded'))
+                    dispatch(appActions.changeAppStatusAC({status: 'succeeded'}))
                 }else{
                     errorAppServerHeandler(dispatch,res.data)        
                 }
@@ -173,7 +172,7 @@ export const changeTaskStatusTC = (todolistId:string, taskId:string,newStatus:Ta
     }
 }
 export const changeTaskTitleTC = (todolistId:string, taskId:string, title: string)=> {
-    return async (dispatch: DispatchThunkType, getState: ()=> AppRootStateType)=> {
+    return async (dispatch: AppDispatch, getState: ()=> AppRootState)=> {
         try{
             const taskForRequest = getState().tasks[todolistId].find(task=> taskId === task.id)
             if (taskForRequest){
@@ -184,11 +183,11 @@ export const changeTaskTitleTC = (todolistId:string, taskId:string, title: strin
                                             startDate: taskForRequest.startDate,
                                             deadline: taskForRequest.deadline
                                         }
-                dispatch(changeAppStatusAC('loading'))                        
+                dispatch(appActions.changeAppStatusAC({status: 'loading'}))                        
                 let res = await taskApi.updateTask(todolistId,taskId, newTaskForRequest)
                 if(res.data.resultCode ===0){
                     dispatch(changeTaskTitleAC(todolistId,taskId,title))
-                    dispatch(changeAppStatusAC('succeeded'))
+                    dispatch(appActions.changeAppStatusAC({status: 'succeeded'}))
                 }else{
                     errorAppServerHeandler(dispatch,res.data)        
                 }
@@ -208,10 +207,3 @@ export const changeTaskTitleTC = (todolistId:string, taskId:string, title: strin
        
     }
 }
-type DispatchThunkType = Dispatch<  SetTodolistsAC 
-                                    |AddTaskACType 
-                                    |ChangeTaskStatusACType 
-                                    |ChangeTaskTitleACType
-                                    |RemoveTaskACType 
-                                    |ChangeAppStatusActionType 
-                                    |SetAppErrorActionType>

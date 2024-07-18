@@ -1,8 +1,8 @@
-import { Dispatch } from "redux"
 import { autnApi } from "../api/todolistApi"
-import { ChangeAppStatusActionType, changeAppStatusAC } from "../state/appReducer"
 import { errorAppServerHeandler, errorNetworkHeandler } from "../utils/errorsUtil"
 import { AxiosError } from "axios"
+import { AppDispatch } from "../state/store"
+import { appActions, appSlice } from "../state/appReducer"
 
 const initialState = {
     isLoggedIn: false
@@ -25,13 +25,13 @@ export const authReducer = (state=initialState, action: ActionsType)=> {
 const setIsLoggedInAC = (isLoggedIn: boolean)=> ({type: 'CHANGE-IS-LOGGED-IN', isLoggedIn} as const)
 
 export const setIsLoggedInTC = ()=> {
-    return (dispatch: Dispatch<ChangeIsLoggedInActionType | ChangeAppStatusActionType>)=> {
-        dispatch(changeAppStatusAC('loading'))
+    return (dispatch: AppDispatch)=> {
+        dispatch(appActions.changeAppStatusAC({status: 'loading'}))
         autnApi.me()
         .then(res => {
             if (res.data.resultCode === 0){
                 dispatch(setIsLoggedInAC(true))
-                dispatch(changeAppStatusAC('succeeded'))
+                dispatch(appActions.changeAppStatusAC({status: 'succeeded'}))
             } else {
                 errorAppServerHeandler(dispatch, res.data)
             }
@@ -47,13 +47,13 @@ export const setIsLoggedInTC = ()=> {
     }
 }
 export const logInTC = (form: FormType)=> {
-    return (dispatch: Dispatch<ChangeIsLoggedInActionType | ChangeAppStatusActionType>)=> {
-        dispatch(changeAppStatusAC('loading'))
+    return (dispatch: AppDispatch)=> {
+        dispatch(appActions.changeAppStatusAC({status: 'loading'}))
         autnApi.logIn(form)
         .then(res => {
             if (res.data.resultCode === 0){
                 dispatch(setIsLoggedInAC(true))
-                dispatch(changeAppStatusAC('succeeded'))
+                dispatch(appActions.changeAppStatusAC({status: 'succeeded'}))
             } else {
                 errorAppServerHeandler(dispatch, res.data)
             }
@@ -69,13 +69,13 @@ export const logInTC = (form: FormType)=> {
     }
 }
 export const logOutTC = ()=> {
-    return (dispatch: Dispatch<ChangeIsLoggedInActionType | ChangeAppStatusActionType>)=> {
-        dispatch(changeAppStatusAC('loading'))
+    return (dispatch: AppDispatch)=> {
+        dispatch(appActions.changeAppStatusAC({status: 'loading'}))
         autnApi.logOut()
         .then(res => {
             if (res.data.resultCode === 0){
                 dispatch(setIsLoggedInAC(false))
-                dispatch(changeAppStatusAC('succeeded'))
+                dispatch(appActions.changeAppStatusAC({status: 'succeeded'}))
             } else {
                 errorAppServerHeandler(dispatch, res.data)
             }

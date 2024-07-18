@@ -1,18 +1,18 @@
-import { Dispatch } from "redux"
-import { ChangeAppStatusActionType, SetAppErrorActionType, changeAppStatusAC, setAppErrorAC } from "../state/appReducer"
 import {ResponseType} from './../api/todolistApi'
+import { AppDispatch } from "../state/store"
+import { appActions } from "../state/appReducer"
 
 
-export const errorAppServerHeandler = (dispatch: Dispatch<SetAppErrorActionType | ChangeAppStatusActionType>, error:ResponseType )=>{
+export const errorAppServerHeandler = (dispatch: AppDispatch, error:ResponseType )=>{
     if (error.messages.length){
-        dispatch(setAppErrorAC(error.messages[0]))
+        dispatch(appActions.setAppErrorAC({error: error.messages[0]}))
     } else{
-        dispatch(setAppErrorAC('Some error'))
+        dispatch(appActions.setAppErrorAC({error: 'Some error'}))
     }
-    dispatch(changeAppStatusAC('failed'))
+    dispatch(appActions.changeAppStatusAC({status: 'failed'}))
 }
-export const errorNetworkHeandler = (dispatch: Dispatch<SetAppErrorActionType | ChangeAppStatusActionType>, error: {message: string} )=>{
-        dispatch(setAppErrorAC(error.message))
-        dispatch(changeAppStatusAC('failed'))
+export const errorNetworkHeandler = (dispatch: AppDispatch , error: {message: string} )=>{
+        dispatch(appActions.setAppErrorAC({error: error.message}))
+        dispatch(appActions.changeAppStatusAC({status: 'failed'}))
 }
 

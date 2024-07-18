@@ -1,22 +1,21 @@
-import { ThunkDispatch,thunk} from 'redux-thunk'
 import {tasksReducer} from './tasksReducer'
 import { todolistsReducer } from './todolistsReducer'
-import { AnyAction, applyMiddleware, combineReducers, createStore} from 'redux'
 import { useDispatch } from 'react-redux'
 import { appReducer } from './appReducer'
 import { authReducer } from '../featuries/auth-reducer'
+import { configureStore } from '@reduxjs/toolkit'
 
-const rootReducer = combineReducers({
-    tasks: tasksReducer,
-    todolists: todolistsReducer,
-    app: appReducer, 
-    auth: authReducer
-})
-export const store = createStore(rootReducer,applyMiddleware(thunk))
+export const store = configureStore({
+    reducer: {
+        tasks: tasksReducer,
+        todolists: todolistsReducer,
+        app: appReducer, 
+        auth: authReducer
+    }})
 
-export type AppRootStateType = ReturnType<typeof rootReducer>
-export type AppThunkDispatch = ThunkDispatch<AppRootStateType, unknown, AnyAction>
-export const useAppDispatch = () => useDispatch<AppThunkDispatch>();
+export type AppRootState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch
+export const useAppDispatch = () => useDispatch<AppDispatch>();
 
 
 // а это, чтобы можно было в консоли браузера обращаться к store в любой момент
