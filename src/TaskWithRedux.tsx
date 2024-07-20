@@ -2,7 +2,7 @@ import { memo, useCallback } from "react"
 import { TaskCheckbox } from "./checkbox/TaskCheckbox"
 import { EditableSpan } from "./editableSpan/EditableSpan"
 import { useDispatch, useSelector } from "react-redux"
-import { AppRootStateType } from "./state/store"
+import { AppRootState } from "./state/store"
 import { ItemTaskType, TaskStatuses } from "./api/todolistApi"
 import { changeTaskStatusAC, changeTaskTitleAC, removeTaskAC } from "./state/tasksReducer"
 
@@ -15,7 +15,7 @@ type TaskPropsType = {
 
 export const TaskWithRedux = memo ((props: TaskPropsType) => {
     
-    const task = useSelector<AppRootStateType, ItemTaskType>(state=> state.tasks[props.todolistId].find(task => task.id === props.taskId) as ItemTaskType )
+    const task = useSelector<AppRootState, ItemTaskType>(state=> state.tasks[props.todolistId].find(task => task.id === props.taskId) as ItemTaskType )
     
     const dispatch = useDispatch()
 

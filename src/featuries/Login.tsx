@@ -1,6 +1,6 @@
 import { useFormik } from 'formik';
 import { useSelector } from 'react-redux';
-import { AppRootStateType, useAppDispatch } from '../state/store';
+import { AppRootState, useAppDispatch } from '../state/store';
 import { Navigate } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import FormControl from '@mui/material/FormControl';
@@ -9,7 +9,7 @@ import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
-import { logInTC } from './auth-reducer';
+import { logIn } from './authReducer';
 
 type FormikErrorType = {
   email?: string
@@ -17,7 +17,7 @@ type FormikErrorType = {
   rememberMe?: boolean
 }
 export const Login = () => {
-  const isAuth = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
+  const isAuth = useSelector<AppRootState, boolean>(state => state.auth.isLoggedIn)
   const dispatch = useAppDispatch()
   const formik = useFormik({
     initialValues: {
@@ -27,7 +27,7 @@ export const Login = () => {
     },
     onSubmit: values => {
       // alert(JSON.stringify(values, null, 2))
-      dispatch(logInTC(values))
+      dispatch(logIn(values))
       formik.resetForm()
     },
     validate: values => {

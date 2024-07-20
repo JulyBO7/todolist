@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux"
-import { AppRootStateType, useAppDispatch } from "./state/store"
+import { AppRootState, useAppDispatch } from "./state/store"
 import { TodolistType } from "./AppWithRedux"
 import Grid from "@mui/material/Grid"
 import Paper from "@mui/material/Paper"
@@ -12,8 +12,8 @@ import { AddItemForm } from "./addItemForm/AddItemForm"
 
 export const TodolistsList = () => {
     console.log("TodolistsList")
-    const isAuth = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
-    const todolists = useSelector<AppRootStateType, TodolistType[]>(state => state.todolists)
+    const isAuth = useSelector<AppRootState, boolean>(state => state.auth.isLoggedIn)
+    const todolists = useSelector<AppRootState, TodolistType[]>(state => state.todolists)
     const dispatch = useAppDispatch()
     
     const addTodolist = useCallback((titleItem: string) => {

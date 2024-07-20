@@ -4,7 +4,7 @@ import { Todolist } from './todolist/Todolist';
 import { AddItemForm } from './addItemForm/AddItemForm';
 import {  addTodolistTC, setTodolistsTC} from './state/todolistsReducer';
 import { useSelector } from 'react-redux';
-import { AppRootStateType, useAppDispatch } from './state/store';
+import {  AppRootState, useAppDispatch } from './state/store';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
@@ -17,10 +17,11 @@ import { ItemTaskType} from './api/todolistApi';
 import { RequestStatusType } from './state/appReducer';
 import LinearProgress from '@mui/material/LinearProgress';
 import {ErrorSnackBar} from './snackBar/ErrorSnackBar';
-import { logOutTC, setIsLoggedInTC } from './featuries/auth-reducer';
+import { logOut, setIsLoggedIn } from './featuries/authReducer';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { TodolistsList } from './TodolistList';
 import { Login } from './featuries/Login';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export type TasksType = {
     [todolistID: string]: Array<ItemTaskType>
@@ -35,17 +36,20 @@ export type TodolistType = {
 
 function AppWithRedux() {
     console.log('AppWithRedux')
-    let status = useSelector<AppRootStateType, RequestStatusType>(state=> state.app.appStatus)
-    let isAuth = useSelector<AppRootStateType, boolean>(state=> state.auth.isLoggedIn)
+    let status = useSelector<AppRootState, RequestStatusType>(state=> state.app.status)
+    let isAuth = useSelector<AppRootState, boolean>(state=> state.auth.isLoggedIn)
+    let isInitialized = useSelector<AppRootState, boolean>(state=> state.app.isInitialized)
     let dispatch = useAppDispatch()
     
     useEffect(()=> {
         console.log('effect AppWithRedux')
-            dispatch(setIsLoggedInTC())
+            dispatch(setIsLoggedIn())
     }, [])
     const onLogOutHeandler = ()=> {
-        dispatch(logOutTC())
+        dispatch(logOut())
     }
+    if (!isInitialized) return <CircularProgress variant="determinate" value={25} />
+
     return (
         <div>
             <AppBar position="static" color="success">
