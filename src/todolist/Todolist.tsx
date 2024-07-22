@@ -10,7 +10,7 @@ import { ItemTaskType, TaskStatuses } from "../api/todolistApi";
 import { addTasksTC, changeTaskStatusTC, changeTaskTitleTC, removeTaskAC, removeTaskTC, setTasksTC } from "../state/tasksReducer";
 import { useSelector } from "react-redux";
 import Button from '@mui/material/Button'
-import { changeFilterAC, removeTodolistTC, updateTitleTodolistTC } from "../state/todolistsReducer";
+import { changeFilterAC, removeTodolist, updateTodolist } from "../state/todolistsReducer";
 
 type TodolistPropsType = {
     todolistId: string
@@ -28,10 +28,10 @@ export const Todolist = memo((props: TodolistPropsType) => {
         dispatch(changeFilterAC(props.todolistId, newFilterValue))
     }, [dispatch])
     const removeTodolist = useCallback(()=> {
-        dispatch(removeTodolistTC(props.todolistId))
+        dispatch(removeTodolist(props.todolistId))
     }, [dispatch])
     const changeTodolistTitle = useCallback((newTitle: string) => {
-        dispatch(updateTitleTodolistTC(props.todolistId, newTitle))
+        dispatch(updateTodolist(props.todolistId, newTitle))
     }, [dispatch])
 
     const addTask = useCallback((titleNewTask: string): void => {

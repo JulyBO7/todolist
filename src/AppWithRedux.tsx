@@ -2,7 +2,7 @@ import { useCallback, useEffect} from 'react'
 import './App.css';
 import { Todolist } from './todolist/Todolist';
 import { AddItemForm } from './addItemForm/AddItemForm';
-import {  addTodolistTC, setTodolistsTC} from './state/todolistsReducer';
+import {  addTodolist, fetchTodolists} from './state/todolistsReducer';
 import { useSelector } from 'react-redux';
 import {  AppRootState, useAppDispatch } from './state/store';
 import AppBar from '@mui/material/AppBar';

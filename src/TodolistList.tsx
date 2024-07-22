@@ -5,7 +5,7 @@ import Grid from "@mui/material/Grid"
 import Paper from "@mui/material/Paper"
 import { Todolist } from "./todolist/Todolist"
 import { useCallback, useEffect } from "react"
-import { addTodolistTC, setTodolistsTC } from "./state/todolistsReducer"
+import { addTodolist, fetchTodolists } from "./state/todolistsReducer"
 import { Navigate } from "react-router-dom"
 import Container from "@mui/material/Container"
 import { AddItemForm } from "./addItemForm/AddItemForm"
@@ -17,13 +17,13 @@ export const TodolistsList = () => {
     const dispatch = useAppDispatch()
     
     const addTodolist = useCallback((titleItem: string) => {
-        dispatch(addTodolistTC(titleItem))
+        dispatch(addTodolist(titleItem))
     }, [dispatch])
 
     useEffect(() => {
         if (!isAuth) return 
         console.log('effect TodolistsList ')
-        dispatch(setTodolistsTC())
+        dispatch(fetchTodolists())
     }, [])
 
     if (!isAuth) return <Navigate to='/login' />
