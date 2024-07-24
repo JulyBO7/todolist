@@ -21,7 +21,7 @@ export const taskApi = {
     setTasks (todolistId: string){
         return instanse.get<SetTasksResponseType>(`todo-lists/${todolistId}/tasks`)
     },
-    addTask (todolistId: string, payload: {title: string}){
+    addTaskTC (todolistId: string, payload: {title: string}){
         return instanse.post<ResponseType<{item: ItemTaskType}>>(`todo-lists/${todolistId}/tasks`, payload)
     }, 
     updateTask(todolistId: string, taskId: string, payload: TaskForUpdateType ){

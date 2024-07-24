@@ -42,6 +42,8 @@ export const setIsLoggedIn = createAsyncThunk<{ isLoggedIn: boolean }, void>('au
     } catch (error) {
         errorNetworkHeandler(dispatch, error as Error)
         return rejectWithValue(error)
+    } finally{
+        dispatch(appActions.setInitialized({ isInitialized: true }))
     }
 })
 export const logOut = createAsyncThunk<{ isLoggedIn: boolean }, void>('auth/logOut', async (_, { dispatch, rejectWithValue }) => {

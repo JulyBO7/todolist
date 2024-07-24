@@ -10,15 +10,15 @@ type TaskPropsType = {
     title: string
     changeTaskTitle: (taskId: string, newTitle: string)=> void
     removeTask: (taskId: string) => void
-    changeTaskStatus: (taskId: string, newIsDoneValue: TaskStatuses) => void
+    changeTask: (taskId: string, newIsDoneValue: TaskStatuses) => void
 }
 
 export const Task = memo ((props: TaskPropsType) => {
 console.log('Task')
 
-    const changeTaskStatus = useCallback((value: TaskStatuses) => { 
-        props.changeTaskStatus (props.taskId, value)
-    }, [props.changeTaskStatus,props.taskId])
+    const changeTask = useCallback((value: TaskStatuses) => { 
+        props.changeTask (props.taskId, value)
+    }, [props.changeTask,props.taskId])
 
     const changeTaskTitle = useCallback((newTitle: string) => {
         props.changeTaskTitle(props.taskId,newTitle )
@@ -29,7 +29,7 @@ console.log('Task')
 
     return (
         <div>
-            <TaskCheckbox check={props.status === TaskStatuses.Completed ? true : false} changeStatus={changeTaskStatus} />
+            <TaskCheckbox check={props.status === TaskStatuses.Completed ? true : false} changeStatus={changeTask} />
 
             <EditableSpan   title={props.title}
                             todolistId={props.todolistId}

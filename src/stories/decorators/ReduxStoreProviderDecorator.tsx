@@ -1,5 +1,5 @@
 import { Provider } from 'react-redux';
-import { AppRootStateType, store } from '../../state/store';
+import { AppRootState, store } from '../../state/store';
 import { combineReducers, legacy_createStore as createStore} from 'redux';
 import { v1 } from 'uuid';
 import { tasksReducer } from '../../state/tasksReducer';
@@ -31,7 +31,7 @@ const initialGlobalState = {
     
 };
 
-export const storyBookStore = createStore(rootReducer, initialGlobalState as AppRootStateType & undefined );
+export const storyBookStore = createStore(rootReducer, initialGlobalState as AppRootState & undefined );
 
 export const ReduxStoreProviderDecorator = (storyFn: () => React.ReactNode) => {
     return <Provider store={storyBookStore}>{storyFn()}</Provider>

@@ -30,7 +30,7 @@ export const AddItemForm = memo ((props: AddItemFormTypeProps) => {
     const onClickEnterHeandler = (e: any) => {
         e.key === 'Enter' && onClickBtnHeandler()
     }
-    // const isAddTaskBtnDisabled: boolean = title.length > 20 || title.length === 0
+    // const isaddTaskTCBtnDisabled: boolean = title.length > 20 || title.length === 0
 
     return (
             <div>

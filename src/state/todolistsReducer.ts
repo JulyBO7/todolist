@@ -1,18 +1,12 @@
 import { FilterTaskType, TodolistType } from "../AppWithRedux";
 import { TodolistFromServerType } from "../api/todolistApi";
-import { Dispatch } from "redux";
 import { todolistApi } from './../api/todolistApi';
 import { appActions } from "./appReducer";
 import { errorAppServerHeandler, errorNetworkHeandler } from "../utils/errorsUtil";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-// export type ActionType =  ChangeFilterActionType 
-//                         | AddTodolistActionType 
-//                         | ChangeTodolistTitleActionType 
-//                         | RemoveTodolistActionType
-//                         | SetTodolistsACActionType
 
-export const fetchTodolists = createAsyncThunk<TodolistFromServerType[], void>('todolists/fetchTodolists', async (_, { dispatch, rejectWithValue }) => {
+export const fetchTodolistsTC = createAsyncThunk<TodolistFromServerType[], void>('todolists/fetchTodolists', async (_, { dispatch, rejectWithValue }) => {
     try {
         dispatch(appActions.changeAppStatusAC({ status: 'loading' }))
         let response = await todolistApi.set()
@@ -23,7 +17,7 @@ export const fetchTodolists = createAsyncThunk<TodolistFromServerType[], void>('
         return rejectWithValue(error)
     }
 })
-export const addTodolist = createAsyncThunk<TodolistFromServerType, string>('todolists/addTodolist', async (arg, { dispatch, rejectWithValue }) => {
+export const addTodolistTC = createAsyncThunk<TodolistFromServerType, string>('todolists/addTodolist', async (arg, { dispatch, rejectWithValue }) => {
     try {
         const objForRequest = { title: arg }
         dispatch(appActions.changeAppStatusAC({ status: 'loading' }))
@@ -81,14 +75,21 @@ const todolistsSlice = createSlice({
     name: 'todolists',
     initialState,
     reducers: {
-
+        changeFilterAC: (state, action: PayloadAction<{todolistId: string, filter: FilterTaskType  }>)=> {
+            let ind = state.findIndex(todo => todo.id === action.payload.todolistId)
+            if (ind !== -1){
+                state[ind].filter = action.payload.filter
+            }
+        }
     },
     extraReducers: (builder) => {
         builder
-            .addCase(fetchTodolists.fulfilled, (state, action) => {
+            .addCase(fetchTodolistsTC.fulfilled, (state, action) => {
+
+                debugger
                 return action.payload.map(todo => ({ ...todo, filter: 'all' }))
             })
-            .addCase(addTodolist.fulfilled, (state, action) => {
+            .addCase(addTodolistTC.fulfilled, (state, action) => {
                 let newTodo = { ...action.payload, filter: 'all' as FilterTaskType }
                 state.unshift(newTodo)
             })
@@ -107,6 +108,7 @@ const todolistsSlice = createSlice({
     }
 })
 export const todolistsReducer = todolistsSlice.reducer
+export const todolistsActions = todolistsSlice.actions
 
 // export const todolistsReducer = (state = initialState, action: ActionType): Array<TodolistType> => {
 //     switch (action.type) {

@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import {action} from '@storybook/addon-actions'
 import {Task } from './Task';
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
@@ -14,7 +13,7 @@ const meta: Meta<typeof Task> = {
   tags: ['autodocs'],
   // More on argTypes: https://storybook.js.org/docs/api/argtypes
   argTypes: {
-    changeTaskStatus: {
+    changeTask: {
             description: 'Status changed inside Task form',
             action: 'clicked'
     },
@@ -39,9 +38,9 @@ export const TaskIsNotDoneStory: Story = {
     status: 0,
     title: 'HTML',
     todolistId: 'fgdosrg8rgjuh'}
-    // changeTaskStatus: action('Status changed inside Task'),
+    // changeTaskTC: action('Status changed inside Task'),
     // changeTaskTitle: action('Title changed inside Task'),
-    // removeTask: action('Remove Button clicked changed inside Task')
+    // removeTaskTC: action('Remove Button clicked changed inside Task')
 };
 
 export const TaskIsDoneStory: Story = {
