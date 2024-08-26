@@ -28,7 +28,7 @@ export const EditableSpan = memo((props: EditableSpanPropsType) => {
         }
     }
     return (
-        <>
+        <div style={{display: 'inline-block', width: 'inhetit'}}>
             {editMode
                 ? 
                 <TextField  variant="standard" 
@@ -39,12 +39,12 @@ export const EditableSpan = memo((props: EditableSpanPropsType) => {
                             onBlur={onBlurHeandler}
                             onChange={(event) => setTitle(event.currentTarget.value)} />
               
-                : <span onDoubleClick={onDoubleClickHeandler}> {props.title} </span>}
+                : <span style={{display: 'inline-block', width: 'inherit'}} onDoubleClick={onDoubleClickHeandler}> {props.title} </span>}
 
             <IconButton aria-label="delete" onClick={props.removeItem}>
                 <DeleteIcon />
             </IconButton>
-        </>
+        </div>
 
     )
 })

@@ -4,19 +4,20 @@ import { todolistApi } from '../api/todolistsApi';
 import { appActions } from '../../../app/appReducer';
 import { handleServerAppError, handleNetworkError } from '../../../common/utils';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { BaseResponse } from '../../../common/types';
 
-const fetchTodolists = createAsyncThunk<Todolist[], void>('todolists/fetchTodolists', async (_, { dispatch, rejectWithValue }) => {
+const fetchTodolists = createAsyncThunk<Todolist[], void, {rejectValue: Error}>('todolists/fetchTodolists', async (_, { dispatch, rejectWithValue }) => {
     try {
         dispatch(appActions.changeAppStatusAC({ status: 'loading' }))
         let response = await todolistApi.set()
         dispatch(appActions.changeAppStatusAC({ status: 'succeeded' }))
         return response.data
     } catch (error) {
-        handleNetworkError (dispatch, error as Error)
-        return rejectWithValue(error)
+        return handleNetworkError (dispatch,rejectWithValue, error as Error)
+        // return rejectWithValue(error)
     }
 })
-const addTodolist = createAsyncThunk<Todolist, string>('todolists/addTodolist', async (arg, { dispatch, rejectWithValue }) => {
+const addTodolist = createAsyncThunk<Todolist, string, {rejectValue: BaseResponse | {message: string}}>('todolists/addTodolist', async (arg, { dispatch, rejectWithValue }) => {
     try {
         const objForRequest = { title: arg }
         dispatch(appActions.changeAppStatusAC({ status: 'loading' }))
@@ -25,16 +26,14 @@ const addTodolist = createAsyncThunk<Todolist, string>('todolists/addTodolist', 
             dispatch(appActions.changeAppStatusAC({ status: 'succeeded' }))
             return response.data.data.item
         } else {
-            handleServerAppError(dispatch, response.data)
-            return rejectWithValue(response.data)
+            return handleServerAppError(dispatch, rejectWithValue, response.data, false)
         }
     } catch (error) {
-        handleNetworkError (dispatch, error as Error)
-        return rejectWithValue(error)
+        return handleNetworkError (dispatch, rejectWithValue, error as Error)
     }
 }
 )
-const removeTodolist = createAsyncThunk<string, string>('todolists/removeTodolist', async (todolistId, { dispatch, rejectWithValue }) => {
+const removeTodolist = createAsyncThunk<string, string, {rejectValue: BaseResponse | {message: string}}>('todolists/removeTodolist', async (todolistId, { dispatch, rejectWithValue }) => {
     try {
         dispatch(appActions.changeAppStatusAC({ status: 'loading' }))
         let response = await todolistApi.removeTodo(todolistId)
@@ -42,15 +41,13 @@ const removeTodolist = createAsyncThunk<string, string>('todolists/removeTodolis
             dispatch(appActions.changeAppStatusAC({ status: 'succeeded' }))
             return todolistId
         } else {
-            handleServerAppError(dispatch, response.data)
-            return rejectWithValue(response.data)
+            return handleServerAppError(dispatch, rejectWithValue, response.data)
         }
     } catch (error) {
-        handleNetworkError (dispatch, error as Error)
-        return rejectWithValue(error)
+        return handleNetworkError (dispatch, rejectWithValue, error as Error)
     }
 })
-const updateTodolist = createAsyncThunk<{ id: string, title: string }, { id: string, title: string }>('todolists/updateTodolist', async (arg, { dispatch, rejectWithValue }) => {
+const updateTodolist = createAsyncThunk<{ id: string, title: string }, { id: string, title: string}, {rejectValue: BaseResponse | {message: string}}>('todolists/updateTodolist', async (arg, { dispatch, rejectWithValue }) => {
     try {
         const todoForRequest = { title: arg.title }
         dispatch(appActions.changeAppStatusAC({ status: 'loading' }))
@@ -59,12 +56,10 @@ const updateTodolist = createAsyncThunk<{ id: string, title: string }, { id: str
             dispatch(appActions.changeAppStatusAC({ status: 'succeeded' }))
             return { id: arg.id, title: arg.title }
         } else {
-            handleServerAppError(dispatch, response.data)
-            return rejectWithValue(response.data)
+            return handleServerAppError(dispatch, rejectWithValue, response.data)
         }
     } catch (error) {
-        handleNetworkError (dispatch, error as Error)
-        return rejectWithValue(error)
+        return handleNetworkError (dispatch, rejectWithValue, error as Error)
     }
 })
 

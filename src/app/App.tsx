@@ -30,7 +30,6 @@ export type TodolistType = {
 } & {filter: FilterTaskType}
 
 function App() {
-    console.log('AppWithRedux')
     
     const status = useSelector<AppRootState, RequestStatusType>(state=> state.app.status)
     const isAuth = useSelector<AppRootState, boolean>(state=> state.auth.isLoggedIn)

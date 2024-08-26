@@ -1,37 +1,39 @@
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
+import { unwrapResult } from "@reduxjs/toolkit";
 import { ChangeEvent, memo, useState } from "react";
 
 
 type AddItemFormTypeProps = {
-    addItem: (titleItem: string)=> void
+    addItem: (titleItem: string)=> Promise<any>
 }
 
 export const AddItemForm = memo ((props: AddItemFormTypeProps) => {
-    
-    console.log('AddItemForm')
-
     const [title, setTitle] = useState<string>('')
     const [error, setError] = useState<string | null>(null)
 
-    const onChangeInputHeandler = (e: ChangeEvent<HTMLInputElement>) => {
-        setTitle(e.currentTarget.value)
+    const onChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
+            setTitle(e.currentTarget.value)
+            if (e.currentTarget.value.length <=100) setError(null)
     };
-    const onClickBtnHeandler = () => {
-        if (title.trim()){
+    const onClickButton = async () => {
+        if (title.trim()) {
             props.addItem(title)
-            setTitle('')
-            
+                .then(unwrapResult)
+                .then(() => {
+                    setTitle('')
+                    setError('')
+                })
+                .catch((err) => {
+                    setError(err.messages[0])
+                })
         } else {
             setError('Title is required')
         }
-        
     }
-    const onClickEnterHeandler = (e: any) => {
-        e.key === 'Enter' && onClickBtnHeandler()
+    const onClickEnter = (e: any) => {
+        e.key === 'Enter' && onClickButton()
     }
-    // const isaddTaskTCBtnDisabled: boolean = title.length > 20 || title.length === 0
-
     return (
             <div>
                 <TextField  variant="standard" 
@@ -40,10 +42,10 @@ export const AddItemForm = memo ((props: AddItemFormTypeProps) => {
                             value={title}
                             error={!!error}
                             helperText={error}
-                            onChange={onChangeInputHeandler}
-                            onKeyDown={onClickEnterHeandler} />
+                            onChange={onChangeInput}
+                            onKeyDown={onClickEnter} />
 
-                <Button size="small" variant="outlined" onClick={onClickBtnHeandler} color="success"> + </Button>
+                <Button size="small" variant="outlined" onClick={onClickButton} color="success"> + </Button>
             </div>
                
     )

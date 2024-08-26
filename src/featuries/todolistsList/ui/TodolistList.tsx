@@ -12,13 +12,12 @@ import { AddItemForm } from '../../../common/components';
 import { todolistsActions } from '../'
 
 export const TodolistsList = () => {
-    // console.log('TodolistsList')
     const isAuth = useSelector<AppRootState, boolean>(state => state.auth.isLoggedIn)
     const todolists = useSelector<AppRootState, TodolistType[]>(state => state.todolists)
     const {addTodolist,fetchTodolists} = useActions(todolistsActions)
 
     const appendTodolist = useCallback((titleItem: string) => {
-        addTodolist(titleItem)
+        return addTodolist(titleItem)
     }, [])
 
     useEffect(() => {
@@ -33,11 +32,11 @@ export const TodolistsList = () => {
             <Grid container>
                 <AddItemForm addItem={appendTodolist} />
             </Grid>
-            <Grid container spacing={4} rowSpacing={1} >
+            <Grid container spacing={4} rowSpacing={1} style={{flexWrap: 'nowrap', overflowX: 'scroll', height: '85vh'}} >
                 {todolists.map(todolist => {
                     return (
-                        <Grid item key={todolist.id}>
-                            <Paper>
+                        <Grid item key={todolist.id} style={{gap: '10px'}}>
+                            <Paper style={{width: '300px'}}>
                                 <Todolist
                                     todolistId={todolist.id}
                                     title={todolist.title}

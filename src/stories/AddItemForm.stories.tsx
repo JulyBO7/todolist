@@ -24,9 +24,9 @@ export default meta;
 type Story = StoryObj<typeof AddItemForm>;
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
-export const AddItemFormStory: Story = {
-  args: {
-    addItem:  action('Button clicked inside form')
-  },
-};
+// export const AddItemFormStory: Story = {
+//   args: {
+//     addItem:  action('Button clicked inside form')
+//   },
+// };
 

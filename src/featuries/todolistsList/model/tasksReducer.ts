@@ -4,19 +4,22 @@ import { handleServerAppError, handleNetworkError } from '../../../common/utils'
 import { AppRootState } from '../../../app/store';
 import { appActions } from '../../../app/appReducer';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-                            
-const fetchTasks = createAsyncThunk<{tasks: ItemTaskType[], todolistId: string}, string>('tasks/fetchTasksTC', async (todolistId, {dispatch, rejectWithValue})=>{
+              
+export type DomainModelTask = Partial<TaskForUpdateType>
+
+const fetchTasks = createAsyncThunk<{tasks: ItemTaskType[], todolistId: string}, string>('tasks/fetchTasksTC', async (todolistId, {dispatch, rejectWithValue}) => {
     try {
         dispatch(appActions.changeAppStatusAC({ status: 'loading' }))
         let res = await taskApi.setTasks(todolistId)
         dispatch(appActions.changeAppStatusAC({ status: 'succeeded' }))
         return { tasks: res.data.items, todolistId }
     } catch (error) {
-        handleNetworkError(dispatch, error as Error)
-        return rejectWithValue(error)
+        return handleNetworkError(dispatch, rejectWithValue, error as Error)
     }
 })
-const addTask = createAsyncThunk<{ task: ItemTaskType, todolistId: string }, { todolistId: string, title: string }>('tasks/addTaskTC', async (arg, { dispatch, rejectWithValue }) => {
+const addTask = createAsyncThunk<{ task: ItemTaskType, todolistId: string }
+                                ,{ todolistId: string, title: string }>
+                                ('tasks/addTaskTC', async (arg, { dispatch, rejectWithValue }) => {
     try {
         const taskToAdd = { title: arg.title }
         dispatch(appActions.changeAppStatusAC({ status: 'loading' }))
@@ -25,16 +28,16 @@ const addTask = createAsyncThunk<{ task: ItemTaskType, todolistId: string }, { t
             dispatch(appActions.changeAppStatusAC({ status: 'succeeded' }))
             return { todolistId: arg.todolistId, task: res.data.data.item }
         } else {
-            handleServerAppError(dispatch, res.data)
-            return rejectWithValue(res.data)
+            return handleServerAppError(dispatch, rejectWithValue, res.data, false)
         }
     } catch (error) {
-        handleNetworkError(dispatch, error as Error)
-        return rejectWithValue(error)
+        return handleNetworkError(dispatch, rejectWithValue, error as Error)
     }
 }
 )
-const removeTask = createAsyncThunk<{ todolistId: string, taskId: string }, { todolistId: string, taskId: string }>('tasks/removeTaskTC', async (arg, { dispatch, rejectWithValue }) => {
+const removeTask = createAsyncThunk<{ todolistId: string, taskId: string }
+                                    ,{ todolistId: string, taskId: string }>
+                                    ('tasks/removeTaskTC', async (arg, { dispatch, rejectWithValue }) => {
     try{
         dispatch(appActions.changeAppStatusAC({status: 'loading'}))
         let res = await taskApi.deleteTask(arg.todolistId, arg.taskId)
@@ -42,17 +45,16 @@ const removeTask = createAsyncThunk<{ todolistId: string, taskId: string }, { to
             dispatch(appActions.changeAppStatusAC({status: 'succeeded'}))
             return {todolistId: arg.todolistId, taskId: arg.taskId}
         } else{
-            handleServerAppError(dispatch,res.data)  
-            return rejectWithValue(res.data)  
+            return handleServerAppError(dispatch, rejectWithValue, res.data)  
         }
     } catch (error){
-            handleNetworkError(dispatch, error as Error)
-            return rejectWithValue(error) 
+            return handleNetworkError(dispatch, rejectWithValue, error as Error)
     } 
 })
 
-export type DomainModelTask = Partial<TaskForUpdateType>
-const changeTask = createAsyncThunk<{ todolistId: string, taskId: string, domainModel: DomainModelTask }, { todolistId: string, taskId: string, domainModel: DomainModelTask }, { state: AppRootState }>('tasks/changeTaskTC', async (arg, { dispatch, rejectWithValue, getState }) => {
+const changeTask = createAsyncThunk<{ todolistId: string, taskId: string, domainModel: DomainModelTask }
+                                    ,{ todolistId: string, taskId: string, domainModel: DomainModelTask }, { state: AppRootState }>
+                                    ('tasks/changeTaskTC', async (arg, { dispatch, rejectWithValue, getState }) => {
     try {
         const taskToChange = getState().tasks[arg.todolistId].find(task => arg.taskId === task.id)
         if (taskToChange) {
@@ -71,15 +73,13 @@ const changeTask = createAsyncThunk<{ todolistId: string, taskId: string, domain
                 dispatch(appActions.changeAppStatusAC({ status: 'succeeded' }))
                 return { todolistId: arg.todolistId, taskId: arg.taskId, domainModel: arg.domainModel }
             } else {
-                handleServerAppError(dispatch, res.data)
-                return rejectWithValue(res.data)
+                return handleServerAppError(dispatch, rejectWithValue, res.data)
             }
         } else{
-            return rejectWithValue(null)
+            return rejectWithValue('Task is not exist!')
         }
     } catch (error) {
-        handleNetworkError(dispatch, error as Error)
-        return rejectWithValue(error)
+        return handleNetworkError(dispatch, rejectWithValue, error as Error)
     }
 }
 )

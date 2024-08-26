@@ -19,12 +19,10 @@ export const logIn = createAsyncThunk<{ isLoggedIn: boolean }, FormType>('auth/l
             dispatch(appActions.changeAppStatusAC({ status: 'succeeded' }))
             return { isLoggedIn: true }
         } else {
-            handleServerAppError(dispatch, result.data)
-            return rejectWithValue(result.data)
+            return handleServerAppError(dispatch, rejectWithValue, result.data)
         }
     } catch (error) {
-        handleNetworkError(dispatch, error as Error)
-        return rejectWithValue(error)
+        return handleNetworkError(dispatch, rejectWithValue, error as Error)
     }
 }
 )
@@ -36,12 +34,10 @@ export const setIsLoggedIn = createAsyncThunk<{ isLoggedIn: boolean }, void>('au
             dispatch(appActions.changeAppStatusAC({ status: 'succeeded' }))
             return { isLoggedIn: true }
         } else {
-            handleServerAppError(dispatch, result.data)
-            return rejectWithValue(result.data)
+            return handleServerAppError(dispatch, rejectWithValue, result.data)
         }
     } catch (error) {
-        handleNetworkError(dispatch, error as Error)
-        return rejectWithValue(error)
+        return handleNetworkError(dispatch, rejectWithValue, error as Error)
     } finally{
         dispatch(appActions.setInitialized({ isInitialized: true }))
     }
@@ -54,12 +50,10 @@ export const logOut = createAsyncThunk<{ isLoggedIn: boolean }, void>('auth/logO
             dispatch(appActions.changeAppStatusAC({ status: 'succeeded' }))
             return { isLoggedIn: false }
         } else {
-            handleServerAppError(dispatch, result.data)
-            return rejectWithValue(result.data)
+            return handleServerAppError(dispatch, rejectWithValue, result.data)
         }
     } catch (error) {
-        handleNetworkError(dispatch, error as Error)
-        return rejectWithValue(error)
+        return handleNetworkError(dispatch, rejectWithValue, error as Error)
     }
 })
 

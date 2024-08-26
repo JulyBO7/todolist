@@ -26,21 +26,23 @@ export const Todolist = memo(({ todolistId, title, filter }: Props) => {
     useEffect(() => {
         fetchTasks(todolistId)
     }, [])
-    const setFilter = useCallback((filter: FilterTaskType) => {
-        changeFilter({ todolistId: todolistId, filter })
-    }, [])
+
     const onRemoveTodolist = useCallback(() => {
         removeTodolist(todolistId)
     }, [])
     const changeTodolistTitle = useCallback((title: string) => {
-        updateTodolist({ todolistId, title })
+        updateTodolist({ id:todolistId, title })
     }, [])
 
     const appendTask = useCallback((title: string) => {
-        addTask({ todolistId, title })
+        return addTask({ todolistId, title })
     }, [])
-
-    const onChangeFilter = useCallback((name: FilterTaskType) => setFilter(name), [])
+    const setFilter = (filter: FilterTaskType) => {
+        changeFilter({ todolistId: todolistId, filter })
+    }
+    const onChangeFilter = (name: FilterTaskType) => {
+        setFilter(name)
+    }
 
     let filteredTasks = tasks
     if (filter === 'active') {
