@@ -25,7 +25,7 @@ export type ItemTaskType = {
     startDate: Date
     deadline: Date
     id: string
-    todoListId: string
+    todolistId: string
     addedDate: Date
     order: number
 }

@@ -1,43 +1,45 @@
-import { memo, useCallback } from "react"
-import { TaskCheckbox } from "./TaskCheckbox"
-import { EditableSpan } from "../../../../common/components/EditableSpan/EditableSpan"
-import { TaskStatuses } from "../../../../common/enums"
+import { ChangeEvent, memo, useCallback } from 'react';
+import { EditableSpan } from '../../../../common/components';
+import { TaskStatuses } from '../../../../common/enums';
+import { tasksActions } from '../..';
+import { useActions } from '../../../../common/hooks';
+import Checkbox from '@mui/material/Checkbox';
+import { ItemTaskType } from '../../api/tasksApi';
 
-type TaskPropsType = {
-    todolistId: string
+type Props = {
     taskId: string
+    todolistId: string
     status: TaskStatuses
     title: string
-    changeTaskTitle: (taskId: string, newTitle: string)=> void
-    removeTask: (taskId: string) => void
-    changeTask: (taskId: string, newIsDoneValue: TaskStatuses) => void
 }
+export const Task = memo((props: Props) => {
+    
+    const { removeTask, changeTask } = useActions(tasksActions)
 
-export const Task = memo ((props: TaskPropsType) => {
-console.log('Task')
+    const onChangeTaskTitle = useCallback((title: string) => {
+        changeTask({ todolistId: props.todolistId, taskId: props.taskId, domainModel: { title} })
+    }, [props.taskId])
 
-    const changeTask = useCallback((value: TaskStatuses) => { 
-        props.changeTask (props.taskId, value)
-    }, [props.changeTask,props.taskId])
+    const onRemoveTask = useCallback(() => {
+        removeTask({ todolistId: props.todolistId, taskId: props.taskId })
+    }, [props.taskId])
 
-    const changeTaskTitle = useCallback((newTitle: string) => {
-        props.changeTaskTitle(props.taskId,newTitle )
-    }, [props.changeTaskTitle, props.taskId])
-    const removeTask = useCallback(() => {
-        props.removeTask(props.taskId)
-    }, [props.removeTask,props.taskId])
+    const onChangeTaskStatus = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+        const status = e.currentTarget.checked ? TaskStatuses.Completed : TaskStatuses.New
+        changeTask({ todolistId: props.todolistId, taskId: props.taskId, domainModel: { status } })
+    }, [])
 
     return (
         <div>
-            <TaskCheckbox check={props.status === TaskStatuses.Completed ? true : false} changeStatus={changeTask} />
-
+            <Checkbox   checked={props.status === TaskStatuses.Completed ? true : false}
+                        onChange={onChangeTaskStatus}
+                        color='default' />
             <EditableSpan   title={props.title}
                             todolistId={props.todolistId}
-                            changeTitle={changeTaskTitle}
-                            removeItem={removeTask}
+                            changeTitle={onChangeTaskTitle}
+                            removeItem={onRemoveTask}
             />
         </div>
-
     )
 })
 

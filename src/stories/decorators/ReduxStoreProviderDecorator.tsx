@@ -2,8 +2,8 @@ import { Provider } from 'react-redux';
 import { AppRootState, store } from '../../app/store';
 import { combineReducers, legacy_createStore as createStore } from 'redux';
 import { v1 } from 'uuid';
-import { tasksReducer } from '../../featuries/todolistsList/model/tasksReducer';
-import { todolistsReducer } from '../../featuries/todolistsList/model/todolistsReducer';
+import { tasksReducer } from '../../featuries/todolistsList';
+import { todolistsReducer } from '../../featuries/todolistsList';
 
 const rootReducer = combineReducers({
     tasks: tasksReducer,

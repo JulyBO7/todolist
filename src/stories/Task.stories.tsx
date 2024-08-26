@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Task } from '../featuries/todolistsList/ui/Task/Task';
+import { Task } from '../featuries/todolistsList';
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta: Meta<typeof Task> = {
@@ -13,18 +13,18 @@ const meta: Meta<typeof Task> = {
   tags: ['autodocs'],
   // More on argTypes: https://storybook.js.org/docs/api/argtypes
   argTypes: {
-    changeTask: {
-      description: 'Status changed inside Task form',
-      action: 'clicked'
-    },
-    changeTaskTitle: {
-      description: 'Status changed inside Task',
-      action: 'clicked'
-    },
-    removeTask: {
-      description: 'Remove Button clicked changed inside Task inside Task',
-      action: 'clicked'
-    },
+    // changeTask: {
+    //   description: 'Status changed inside Task form',
+    //   action: 'clicked'
+    // },
+    // changeTaskTitle: {
+    //   description: 'Status changed inside Task',
+    //   action: 'clicked'
+    // },
+    // removeTask: {
+    //   description: 'Remove Button clicked changed inside Task inside Task',
+    //   action: 'clicked'
+    // },
 
   },
 };
